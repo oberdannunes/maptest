@@ -5,8 +5,8 @@
   <title>Mapa com Rotação Automática (Heading)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Mapbox GL JS -->
-  <link href="https://api.mapbox.com/mapbox-gl-js/v3.13.0/mapbox-gl.css" rel="stylesheet">
-  <script src="https://api.mapbox.com/mapbox-gl-js/v3.13.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
   <style>
     body { margin: 0; padding: 0; }
     #map { position: absolute; top: 0; bottom: 0; width: 100%; }
@@ -16,7 +16,7 @@
 <div id="map"></div>
 
 <script>
-  mapboxgl.accessToken = 'pk.eyJ1Ijoib2JlcmRhbm51bmVzIiwiYSI6ImNtZHJpc3ltYTBqbXUycXB1dDF0em9iOHcifQ.nMl3EXau1EGsnm542tDe4Q';
+  mapboxgl.accessToken = 'k.eyJ1Ijoib2JlcmRhbm51bmVzIiwiYSI6ImNtZHJpc3ltYTBqbXUycXB1dDF0em9iOHcifQ.nMl3EXau1EGsnm542tDe4Q';
 
   const map = new mapboxgl.Map({
     container: 'map',
@@ -27,25 +27,33 @@
     bearing: 0
   });
 
-  // Add geolocate control to the map.
-  const geolocate = new mapboxgl.GeolocateControl({
-    positionOptions: {
-      enableHighAccuracy: true
-    },
-    trackUserLocation: true,
-    showUserHeading: true
-  });
-  map.addControl(geolocate);
+  const marker = new mapboxgl.Marker({ color: 'cyan' }).setLngLat(map.getCenter()).addTo(map);
 
-  // Listen for geolocate events and rotate the map to match the heading
-  geolocate.on('geolocate', function(e) {
-    if (typeof e.coords.heading === 'number' && !isNaN(e.coords.heading)) {
-      // Mapbox GL JS uses bearing in degrees, clockwise from north
-      map.rotateTo(e.coords.heading, { duration: 500 });
-    }
-  });
+  // Atualiza mapa com localização e heading do usuário
+  if ('geolocation' in navigator) {
+    navigator.geolocation.watchPosition(
+      (pos) => {
+        const lng = pos.coords.longitude;
+        const lat = pos.coords.latitude;
+        const heading = pos.coords.heading || 0;
 
+        // Move o marcador
+        marker.setLngLat([lng, lat]);
 
+        // Move e rotaciona o mapa com animação suave
+        map.easeTo({
+          center: [lng, lat],
+          bearing: heading,
+          duration: 500,
+          pitch: 60
+        });
+      },
+      (err) => console.error('Erro no GPS:', err),
+      { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
+    );
+  } else {
+    alert('Seu navegador não suporta geolocalização.');
+  }
 </script>
 </body>
 </html>

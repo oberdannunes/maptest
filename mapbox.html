@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mapa com Rotação Automática (Heading)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Mapbox GL JS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.13.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.13.0/mapbox-gl.js"></script>
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+
+<script>
+  mapboxgl.accessToken = 'pk.eyJ1Ijoib2JlcmRhbm51bmVzIiwiYSI6ImNtZHJpc3ltYTBqbXUycXB1dDF0em9iOHcifQ.nMl3EXau1EGsnm542tDe4Q';
+
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/navigation-night-v1', // ou street-v11
+    center: [-46.6333, -23.5505], // Local inicial (São Paulo)
+    zoom: 15,
+    pitch: 60,
+    bearing: 0
+  });
+
+  // Add geolocate control to the map.
+  const geolocate = new mapboxgl.GeolocateControl({
+    positionOptions: {
+      enableHighAccuracy: true
+    },
+    trackUserLocation: true,
+    showUserHeading: true
+  });
+  map.addControl(geolocate);
+
+  // Listen for geolocate events and rotate the map to match the heading
+  geolocate.on('geolocate', function(e) {
+    if (typeof e.coords.heading === 'number' && !isNaN(e.coords.heading)) {
+      // Mapbox GL JS uses bearing in degrees, clockwise from north
+      map.rotateTo(e.coords.heading, { duration: 500 });
+    }
+  });
+
+
+</script>
+</body>
+</html>

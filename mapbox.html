@@ -36,6 +36,8 @@
         const lng = pos.coords.longitude;
         const lat = pos.coords.latitude;
         const heading = pos.coords.heading || 0;
+        const mapHeight = map.getContainer().clientHeight;
+        const offset = [0, mapHeight / 3]; // Adjust as needed
 
         // Move o marcador
         marker.setLngLat([lng, lat]);
@@ -43,6 +45,7 @@
         // Move e rotaciona o mapa com animação suave
         map.easeTo({
           center: [lng, lat],
+          offset: offset,
           bearing: heading,
           duration: 500,
           pitch: 60

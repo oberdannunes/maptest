@@ -20,7 +20,6 @@
 
   const map = new mapboxgl.Map({
     container: 'map',
-    //style: 'mapbox://styles/mapbox/navigation-night-v1', // ou street-v11
     style: 'mapbox://styles/mapbox/streets-v12', // ou street-v11
     center: [-46.6333, -23.5505], // Local inicial (São Paulo)
     zoom: 15,
@@ -28,7 +27,7 @@
     bearing: 0
   });
 
-  const marker = new mapboxgl.Marker({ color: 'cyan' }).setLngLat(map.getCenter()).addTo(map);
+  //const marker = new mapboxgl.Marker({ color: 'cyan' }).setLngLat(map.getCenter()).addTo(map);
 
   // Atualiza mapa com localização e heading do usuário
   if ('geolocation' in navigator) {
@@ -41,7 +40,7 @@
         const offset = [0, mapHeight / 2 - 100]; // Adjust as needed
 
         // Move o marcador
-        marker.setLngLat([lng, lat]);
+        //marker.setLngLat([lng, lat]);
 
         // Move e rotaciona o mapa com animação suave
         map.easeTo({
@@ -58,6 +57,15 @@
   } else {
     alert('Seu navegador não suporta geolocalização.');
   }
+
+    const geolocate = new mapboxgl.GeolocateControl({
+    positionOptions: {
+      enableHighAccuracy: true
+    },
+    trackUserLocation: true,
+    showUserHeading: true
+  });
+  map.addControl(geolocate);
 </script>
 </body>
 </html>

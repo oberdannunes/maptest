@@ -35,7 +35,7 @@
       (pos) => {
         const lng = pos.coords.longitude;
         const lat = pos.coords.latitude;
-        const heading = - pos.coords.heading || 0;
+        const heading = 90 - (pos.coords.heading || 0);
         const mapHeight = map.getContainer().clientHeight;
         const offset = [0, mapHeight / 2 - 100]; // Adjust as needed
 
